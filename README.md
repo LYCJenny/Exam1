@@ -176,21 +176,6 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 > :information_source: Did the sample not work for you as expected? Then please reach out to us using the [GitHub Issues](../../../../issues) page.
 
-## We'd love your feedback!
-
-Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR73pcsbpbxNJuZCMKN0lURpUNDVHTkg2VVhWMTNYUTZEM05YS1hSN01EOSQlQCN0PWcu).
-
-## Troubleshooting
-
-<details>
-	<summary>Expand for troubleshooting info</summary>
-
-Use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) to get support from the community. Ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
-Make sure that your questions or comments are tagged with [`azure-active-directory` `ms-identity` `adal` `msal`].
-
-</details>
-
-## About the code
 
 ## Sign-in
 
