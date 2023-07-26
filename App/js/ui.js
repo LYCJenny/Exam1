@@ -7,7 +7,7 @@ const welcomeDiv = document.getElementById('welcome-div');
 // const footerDiv = document.getElementById('footer');
 // const tableBody = document.getElementById('table-body-div');
 
-const mainBanner = document.getElementById('mainBanner');
+// const mainBanner = document.getElementById('mainBanner');
 const mainForm = document.getElementById('mainForm');
 const mainFooter = document.getElementById('mainFooter');
 
@@ -18,7 +18,7 @@ function welcomeUser(username) {
     welcomeDiv.classList.remove('d-none');
     welcomeDiv.innerHTML = `Welcome ${username}!`;
 
-    mainBanner.classList.remove('d-none');
+    // mainBanner.classList.remove('d-none');
     mainForm.classList.remove('d-none');
     mainFooter.classList.remove('d-none');
 }

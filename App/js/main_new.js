@@ -509,53 +509,6 @@ document.getElementById("participantForm").addEventListener("submit", function (
             </table>
         `;
 
-        /** method 1: 在跳出視窗中，根據參加者人數加入輸入後的參加者資訊的 Table */
-        // for (let i = 0; i < participantsInfo.length; i++) {
-        //     const tableInfo = createTable(i);
-        //     //最後把整個table append到html裡
-        //     document.getElementById("table-part").appendChild(tableInfo);
-        // }
-
-        // function createTable(index) {
-        //     const partAllData = Object.values(participantsInfo[index]);
-        //     const tableInfo1 = document.createElement("table");
-        //     tableInfo1.classList.add("table", "table-striped", "table-bordered");
-        //     tableInfo1.name = "tableInfo";
-
-        //     let partmobileOld = document.getElementById(`mobile${index}`).value; //使用 let 設定變數是因為 mobile
-        //     let partmobileNew;
-        //     // 檢查第一個數字是否為0
-        //     if (partmobileOld.charAt(0) === "0") {  // charAt(0): 第一個字
-        //         // 刪除第一個數字；substr: 從 index = 1 的位置開始提取，在JS中index從0開始算
-        //         partmobileNew = "+886" + partmobileOld.substr(1);
-        //     }
-        //     mobileCond(index);
-
-        //     // Table header
-        //     let tableHTML = `
-        //         <tr>
-        //             <th>陪同者 ${index + 1} 姓名</th>
-        //             <th>性別</th>
-        //             <th>手機</th>
-        //             <th>信箱</th>
-        //         </tr>
-        //     `;
-
-        //     // Table row with participant data
-        //     tableHTML += `
-        //         <tr>
-        //             <td>${partAllData[0] + partAllData[1]}</td>
-        //             <td>${partAllData[2]}</td>
-        //             <td>${partmobileNew}</td> 
-        //             <td>${partAllData[4]}</td>
-        //         </tr>
-        //     `;
-
-        //     tableInfo1.innerHTML = tableHTML;
-
-        //     return tableInfo1;
-        // }
-
         /** method 2: 在跳出視窗中，根據參加者人數加入輸入後的參加者資訊的 Table，陪同者的table合併 */
         function createTable() {
             const tableInfo = document.createElement("table");
@@ -585,8 +538,6 @@ document.getElementById("participantForm").addEventListener("submit", function (
                     partmobileNew = "+886" + partmobileOld;
                 }
 
-                // let partmobileNew = partmobileOld.charAt(0) === "0" ? partmobileNew = "+886" + partmobileOld.substr(1) : partmobileOld;
-
                 tableHTML += `
                     <tr>
                         <td>${i + 1}</td>
@@ -605,16 +556,52 @@ document.getElementById("participantForm").addEventListener("submit", function (
         // Append the combined table to the HTML element with id "table-part"
         document.getElementById("table-part").appendChild(combinedTable);
 
-
         // 跳出視窗，把 d-none 移除
         document.getElementById("popup").classList.remove("d-none");
 
+        // 在機器人驗證成功前，讓"確認"按鈕不能點選
+        document.getElementById("confirmBtn").disabled = true;
+
+        // 機器人驗證成功後，"確認"按鈕可以點選
+        function enableBtn() {
+            document.getElementById("confirmBtn").disabled = false;
+        }
+
+        function loadRecaptchaScript() {
+            var script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+            script.async = true;
+            script.defer = true;
+            script.onload = initializeRecaptcha;
+            document.body.appendChild(script);
+        }
+        // 增加 recaptcha 驗證
+        function initializeRecaptcha() {
+            grecaptcha.render('recaptcha1', {
+                'sitekey': '6LcFSDcnAAAAAGxNXAZ7qdW4r4VCIabi57UGTn7i',
+                'theme': 'light',
+                'size': 'normal',
+                'callback': enableBtn
+            });
+        }
+
+        // 呼叫 loadRecaptchaScript function
+        loadRecaptchaScript();
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Load the reCAPTCHA script as soon as the page is ready
+            loadRecaptchaScript();
+            // Fetch the daily quote as soon as the page is ready
+            getres();
+        });
         // 點選"確認"按鈕
         document.getElementById("confirmBtn").addEventListener("click", function () {
+            document.getElementById("recaptcha1").classList.remove("d-none");
             document.getElementById("successMessage").textContent = `您已成功報名 ${activities} 活動`;
             document.getElementById("successMessage").classList.remove("d-none");
             //直接清除所有頁面，用 "" 取代
             document.getElementById("participantForm").innerHTML = "";
+            getres();
 
             /** pdf檔 */
             const printWindow = window.open('', 'HTML to PDF', 'height=400,width=800');
@@ -698,13 +685,11 @@ document.getElementById("participantForm").addEventListener("submit", function (
             document.getElementById("popup").classList.add("d-none");
         });
     }
+
 });
 
 //按下確認按鈕後，連接 API，傳送名言佳句
 function getres() {
-    // Clean the page
-    // document.getElementById('registration-message').innerHTML = "You have successfully registered!";
-
     // Get daily inspirational quote
     fetch('https://cors-anywhere.herokuapp.com/https://favqs.com/api/qotd?apikey=49c9c00cdb9d820e9a76de5bf24d8ce4')
         .then(response => response.json())
@@ -719,15 +704,21 @@ function getres() {
         });
 }
 
+let quoteDisplayed = false; // 看quote是否已經顯示了
 function displayQuote(quote) {
-    document.getElementById("quoteMessage").classList.remove("d-none");
-    const quoteContainer = document.createElement('div');
-    quoteContainer.classList.add('bg-success-subtle');
-    quoteContainer.innerHTML = `<h5 class="mb-2 px-2">每日勵志名言：</h5>
-                                <blockquote class="blockquote">
-                                <p class="mb-1 px-2">${quote}</p>
-                                </blockquote>`;
+    // 如果 quote 還沒顯示，就顯示，顯示後 quoteDisplayed 設為 true 就不會再顯示了
+    if (!quoteDisplayed) {
+        document.getElementById("quoteMessage").classList.remove("d-none");
+        const quoteContainer = document.createElement('div');
+        quoteContainer.classList.add('bg-success-subtle');
+        quoteContainer.innerHTML = `<h5 class="mb-2 px-2">每日勵志名言：</h5>
+                                    <blockquote class="blockquote">
+                                    <p class="mb-1 px-2">${quote}</p>
+                                    </blockquote>`;
 
-    document.getElementById("quoteMessage").appendChild(quoteContainer);
+        document.getElementById("quoteMessage").appendChild(quoteContainer);
+
+        quoteDisplayed = true;
+    }
 }
 

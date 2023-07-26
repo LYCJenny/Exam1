@@ -494,13 +494,71 @@ document.getElementById("participantForm").addEventListener("submit", function (
         document.getElementById("popup").classList.remove("d-none");
 
         // 點選"確認"按鈕
-        document.getElementById("confirmBtn").addEventListener("click", function () {
+        document.getElementById("confirmBtn").disabled = true;
 
+        // Define the enableBtn function before loading the reCAPTCHA script
+        function enableBtn() {
+            document.getElementById("confirmBtn").disabled = false;
+        }
+
+        function loadRecaptchaScript() {
+            var script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+            script.async = true;
+            script.defer = true;
+            script.onload = initializeRecaptcha;
+            document.body.appendChild(script);
+        }
+
+        function initializeRecaptcha() {
+            grecaptcha.render('recaptcha1', {
+                'sitekey': '6LcFSDcnAAAAAGxNXAZ7qdW4r4VCIabi57UGTn7i',
+                'theme': 'light',
+                'size': 'normal',
+                'callback': enableBtn
+            });
+        }
+
+        // Call the function to load the reCAPTCHA script
+        loadRecaptchaScript();
+
+        // Function to get the response after reCAPTCHA verification
+        // function getres() {
+        //     // Clean the page
+        //     // document.getElementById('registration-message').innerHTML = "You have successfully registered!";
+        //     // Get daily inspirational quote
+        //     fetch('https://cors-anywhere.herokuapp.com/https://favqs.com/api/qotd?apikey=49c9c00cdb9d820e9a76de5bf24d8ce4')
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             const quote = data.quote.body;
+        //             const author = data.quote.author;
+        //             const quoteAuthor = `${quote} - ${author}`;
+        //             displayQuote(quoteAuthor);
+        //         })
+        //         .catch(error => {
+        //             console.error('Error:', error);
+        //         });
+        // }
+
+        // function displayQuote(quote) {
+        //     document.getElementById("quoteMessage").classList.remove("d-none");
+        //     const quoteContainer = document.createElement('div');
+        //     quoteContainer.classList.add('bg-success-subtle');
+        //     quoteContainer.innerHTML = `<h5 class="mb-2 px-2">每日勵志名言：</h5>
+        //                         <blockquote class="blockquote">
+        //                         <p class="mb-1 px-2">${quote}</p>
+        //                         </blockquote>`;
+
+        //     document.getElementById("quoteMessage").appendChild(quoteContainer);
+        // }
+
+        document.getElementById("confirmBtn").addEventListener("click", function () {
+            document.getElementById("recaptcha1").classList.remove("d-none");
             document.getElementById("successMessage").textContent = "您已成功報名";
             document.getElementById("successMessage").classList.remove("d-none");
             //直接清除所有頁面，用 "" 取代
             document.getElementById("participantForm").innerHTML = "";
-
+            getres();
             /** excel: try 1 
             //Create a new workbook
             const workbook = XLSX.utils.book_new();
@@ -661,6 +719,7 @@ document.getElementById("participantForm").addEventListener("submit", function (
             //隱藏跳出視窗 Clear form and hide popup
             document.getElementById("popup").classList.add("d-none");
         });
+
     }
 });
 

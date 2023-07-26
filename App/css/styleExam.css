@@ -6,10 +6,10 @@
 
 /* banner背景圖片 */
 .banner-holder {
-    background-image: url("../images/banner.jpg");
-    /*mages/sunset.png*/
+    background-image: url("../images/sunset.png");
+    /*images/banner1.jpg*/
     background-size: cover;
-    background-position: center;
+    background-position: right;
 }
 
 .event-details {

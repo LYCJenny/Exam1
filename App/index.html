@@ -37,28 +37,35 @@
 <body>
   <div class="wrapper">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary-subtle navbarStyle">
-      <a class="navbar-brand text-dark" href="/">Exam 1</a>
+      <a class="navbar-brand text-dark" href="/">Event Registration Form</a>
       <div class="collapse navbar-collapse justify-content-end">
         <button type="button" id="signIn" class="btn btn-secondary" onclick="signIn()">Sign-in</button>
         <button type="button" id="signOut" class="btn btn-success d-none" onclick="signOut()">Sign-out</button>
       </div>
     </nav>
 
-    <div class="">
+    <!-- <div class="">
       <h5 id="title-div" class="card-header text-center mt-3 "> Welcome to the Event Registration Form,
         please press
         "Sign-in" button to access the main form.
       </h5>
-    </div>
+    </div> -->
 
 
     <!-- 以下為主要活動報名表 -->
-    <section id="mainBanner" class="banner-holder pt-5 d-none">
+    <section id="mainBanner" class="banner-holder pt-5 "> <!-- d-none -->
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <div class="banner-content text-center text-white my-5 py-5">
-              <h3 id="welcome-div" class="card-header text-center d-none text-white fst-italic"></h3> <!-- 登入後 歡迎XXX -->
+            <div class="banner-content text-center my-5 py-5">
+              <h4 id="title-div" class="card-header text-center mt-3 text-white fst-italic fw-bold"> Welcome to the
+                Event
+                Registration Form,
+                please press
+                "Sign-in" button to access the main form.
+              </h4>
+              <h3 id="welcome-div" class="card-header text-center d-none text-white fst-italic fw-bold"></h3>
+              <!-- 登入後 歡迎XXX -->
               <p> </p>
             </div>
           </div>
@@ -708,7 +715,9 @@
 
         <div id="successMessage" class="alert alert-success d-none"></div>
         <div id="quoteMessage"></div>
-
+        <!--  <div id="quoteImg" class="position-absolute end-0"> class=" d-none" 
+          <img src="images/quote.jpeg" alt="quote image">
+        </div>-->
       </div>
 
       <!-- Modal: 按下提交後，彈出資料確認的視窗 -->
@@ -743,13 +752,12 @@
 
             </div>
             <div class="modal-footer">
-              <div class="g-recaptcha" data-sitekey="6LcFSDcnAAAAAGxNXAZ7qdW4r4VCIabi57UGTn7i" data-theme="light"
-                data-size="normal" data-callback="verify" data-expired-callback="expired" data-error-callback="error">
+              <div id="recaptcha1">
               </div>
               <button type="button" id="returnBtn" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
               <!-- data-bs-dismiss="modal"：點擊按鈕後會關閉modal -->
-              <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal"
-                onclick="getres()">確認</button><!-- onclick="getres()" -->
+              <button type="button" id="confirmBtn" class="btn btn-primary"
+                data-bs-dismiss="modal">確認</button><!-- onclick="getres()" -->
             </div>
 
 
