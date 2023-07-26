@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Exam_index.html</title>
+  <link rel="SHORTCUT ICON" href="./favicon.svg" type="image/x-icon">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styleExam.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+  <!-- msal.min.js can be used in the place of msal.js; included msal.js to make debug easy -->
+  <script id="load-msal" src="https://alcdn.msauth.net/browser/2.31.0/js/msal-browser.js"
+    integrity="sha384-BO4qQ2RTxj2akCJc7t6IdU9aRg6do4LGIkVVa01Hm33jxM+v2G+4q+vZjmOCywYq"
+    crossorigin="anonymous"></script>
+
+  <!-- adding Bootstrap 5 for UI components  -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+  <!-- excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+  <!-- pdf -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <!-- 加載 jspdf-autotable 插件 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-subtle navbarStyle">
+      <a class="navbar-brand text-dark" href="/">Exam 1</a>
+      <div class="collapse navbar-collapse justify-content-end">
+        <button type="button" id="signIn" class="btn btn-secondary" onclick="signIn()">Sign-in</button>
+        <button type="button" id="signOut" class="btn btn-success d-none" onclick="signOut()">Sign-out</button>
+      </div>
+    </nav>
+
+    <div class="">
+      <h5 id="title-div" class="card-header text-center mt-3 "> Welcome to the Event Registration Form,
+        please press
+        "Sign-in" button to access the main form.
+      </h5>
+    </div>
+
+
+    <!-- 以下為主要活動報名表 -->
+    <section id="mainBanner" class="banner-holder pt-5 d-none">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="banner-content text-center text-white my-5 py-5">
+              <h3 id="welcome-div" class="card-header text-center d-none text-white fst-italic"></h3> <!-- 登入後 歡迎XXX -->
+              <p> </p>
+            </div>
+          </div>
+          <!-- <img src="images/banner.jpg" alt="banner img"> -->
+        </div>
+      </div>
+    </section> <!-- Banner -->
+
+    <!-- Main form -->
+    <section id="mainForm" class="main-form d-none" style="background-color: rgb(221, 221, 221);">
+      <div class="container col-md-9 bg-warning-subtle shadow p-3 bg-body rounded">
+        <!-- bg-secondary-subtle bg-gradient:背景顏色、漸層；shadow p-3 bg-body rounded：整個container加陰影 -->
+        <div class="row justify-content-center d-flex">
+          <div class="d-flex justify-content-center">
+            <h2 class="d-inline-flex">活動報名表</h2>
+            <!-- <div class="">
+                    <button class="btn btn-success d-inline-flex justify-content-end">登入</button>
+                </div> -->
+          </div>
+          <!-- 連結SSO -->
+          <!-- <div class="d-flex justify-content-end">
+          <button class="btn btn-success" onclick="signIn()">登入</button>
+        </div> -->
+          <div class="col-md-12"> <!-- 在視窗大小為md時，占10個column (系統會自動將每個row分成12個column) -->
+            <form class="row justify-content-center" name="myForm" id="participantForm">
+              <!-- onsubmit="runMe(); return false;" -->
+              <!--class="p-3";  align-items-center； return flase: 防止頁面自動提交 -->
+              <!-- 姓名 -->
+              <div class="row mb-2 mt-3 justify-content-center g-2">
+                <!-- col-md-5：在10個column的區間裡，再占5個column(兩個div加起來共10個column) ，
+                                    所以左右兩邊分別都還會多一個空的column，因為系統有再把這個form裡細分成12個column -->
+                <div class="col-md-5">
+                  <label for="firstName0" class="form-label">
+                    <h5>姓氏 <span class="required-mark">*</span></h5>
+                  </label>
+                  <input type="text" class="form-control border-0 border-bottom " id="firstName0" name="myFirstName"
+                    placeholder="請填入文字" oninput="firstNameFunc(0);" oninvalid="alert('You must fill out first name!');">
+                  <h6 id="firstCond0" class="ms-2 mt-1"></h6> <!--  style="display: inline;" -->
+                </div>
+                <div class="col-md-5">
+                  <label for="lastName0" class="form-label">
+                    <h5>名字 <span class="required-mark">*</span></h5>
+                  </label>
+                  <input type="text" class="form-control border-0 border-bottom" id="lastName0" name="myLastName"
+                    placeholder="請填入文字" oninput="lastNameFunc(0);"> <!-- form-control-sm, required-->
+                  <h6 id="lastCond0" class="ms-2 mt-1"></h6>
+                </div>
+              </div>
+
+              <!-- 電話 -->
+              <div class="row mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <label for="phone-number" class="form-label">
+                    <h5> ☎️電話號碼 (請輸入數字) <span class="required-mark">*</span></h5>
+                  </label>
+                </div>
+              </div>
+              <div class="row mb-3 justify-content-center g-2">
+                <!-- new methods 1 (use dropdown-menu) -->
+                <!-- <div class="col-md-2"> 
+                            <button class="btn btn-primary bg-primary-subtle dropdown-toggle text-dark"
+                                type="button" id="region-num" data-bs-toggle="dropdown" aria-expanded="false">
+                                請選擇區號
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="region-num">
+                                <li><button class="dropdown-item disabled" type="button" id="region-1"
+                                        onclick="reg('01')">01 (南京)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-2" onclick="reg('02')">02
+                                        (基隆、台北)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-3" onclick="reg('03')">03
+                                        (桃園、新竹、宜蘭、花蓮)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-4"
+                                        onclick="reg('037')">037 (苗栗)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-5" onclick="reg('04')">04
+                                        (台中、彰化)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-6"
+                                        onclick="reg('049')">049 (南投)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-7" onclick="reg('05')">05
+                                        (嘉義、雲林)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-8" onclick="reg('06')">06
+                                        (台南)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-9" onclick="reg('07')">07
+                                        (高雄)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-10"
+                                        onclick="reg('08')">08 (屏東)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-11"
+                                        onclick="reg('082')">082 (金門)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-12"
+                                        onclick="reg('089')">089 (台東)</button></li>
+                                <li><button class="dropdown-item" type="button" id="region-13"
+                                        onclick="reg('0836')">0836 (馬祖)</button></li>
+                            </ul>
+                        </div> -->
+                <!-- new methods 2 (use dropdown-menu) -->
+                <div class="col-md-2 dropdown"> <!-- dropend: 往右邊延伸選項 -->
+                  <!-- 方法一: just one button-->
+                  <button class="btn dropdown-toggle btn-info bg-info-subtle dropdown-toggle-split" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">區域號碼
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><button class="dropdown-item disabled" type="button" id="region-1" onclick="reg1()">01
+                        (南京)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-2" onclick="reg2()">02
+                        (基隆、台北)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-3" onclick="reg3()">03
+                        (桃園、新竹、宜蘭、花蓮)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-4" onclick="reg4()">037
+                        (苗栗)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-5" onclick="reg5()">04
+                        (台中、彰化)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-6" onclick="reg6()">049
+                        (南投)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-7" onclick="reg7()">05
+                        (嘉義、雲林)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-8" onclick="reg8()">06
+                        (台南)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-9" onclick="reg9()">07
+                        (高雄)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-10" onclick="reg10()">08
+                        (屏東)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-11" onclick="reg11()">082
+                        (金門)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-12" onclick="reg12()">089
+                        (台東)</button></li>
+                    <li><button class="dropdown-item" type="button" id="region-13" onclick="reg13()">0836
+                        (馬祖)</button></li>
+                  </ul>
+                </div>
+                <div class="col-md-2" id="region-num">
+                  <!--  aria-required="true" : 用戶輸入是必須的，對輔助技術使用者來說會加強required屬性。-->
+                  <input type="tel" class="form-control border-0 border-bottom region-temp"
+                    onkeydown="javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"
+                    id="region-temp" placeholder="選擇區號" maxlength="4" required>
+                  <!-- form-control-sm: 設定選框尺寸-->
+                </div>
+                <div class="col-md-6">
+                  <!-- type="number"包含幾個特定字元，因此要加入 onkeydown 的條件：只能輸入數字，e, -, ., + 都不能輸入 -->
+                  <input type="tel"
+                    onkeydown="javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"
+                    class="form-control border-0 border-bottom" id="phone-number" name="phone-number"
+                    placeholder="請填入電話號碼" maxlength="8" oninput="phoneFunc();"> <!-- required -->
+                  <h6 id="phoneMsg" class="ms-2 mt-1"></h6>
+                </div>
+              </div>
+
+              <!-- 手機(固定886)，如果打0的話要刪除 -->
+              <div class="row mb-2 mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <div class="input-group">
+                    <label for="mobile0" class="form-label">
+                      <h5>📱手機 (請輸入數字) <span class="required-mark me-2">* </span></h5>
+                    </label>
+                    <span class="input-group-text">+886</span>
+                    <!-- type="number"包含幾個特定字元，因此要加入 onkeydown 的條件：只能輸入數字，e, -, ., + 都不能輸入 -->
+                    <input type="tel"
+                      onkeydown="javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"
+                      id="mobile0" class="form-control border-0 border-bottom" placeholder="請填入手機號碼" size="10"
+                      maxlength="10" oninput="telFunc(0);"> <!-- required -->
+                    <!-- form-control-sm -->
+                    <h6 id="message0" class="ms-2" style="display: inline;"></h6>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 信箱 -->
+              <div class="row mb-2 mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <label for="emailID0" class="form-label">
+                    <h5>📮信箱 <span class="required-mark">*</span></h5>
+                  </label>
+                  <input type="email" class="form-control border-0 border-bottom" id="emailID0"
+                    placeholder="abc@gmail.com" oninput="emailFunc(0);"> <!-- required、form-control-sm -->
+                  <h6 id="emailCond0" class="ms-2 mt-1"></h6>
+                </div>
+              </div>
+
+              <!-- 性別 -->
+              <div class="row mb-2 mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <h5>性別 <span class="required-mark">*</span></h5>
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <label class=" list-group list-group-item list-group-item-action list-inline">
+                        <input type="radio" class="form-check-input me-2" value="Male" name="gender" required>
+                        <!--onclick="gender0Func()"-->
+                        男性💁🏻‍♂️
+                      </label>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="list-group list-group-item list-group-item-action list-inline">
+                        <input type="radio" class="form-check-input me-2" value="Female" name="gender" required>
+                        <!--onclick="gender0Func()"-->
+                        女性💁🏻‍♀️
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 生日 -->
+              <div class="row mb-2 mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <div class="mb-3">
+                    <label for="birth">
+                      <h5>🎂生日 <span class="required-mark">*</span></h5>
+                    </label>
+                    <input type="date" id="birth" class="form-control form-control border-0 border-bottom"
+                      oninput="birthFunc();">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 期望參與活動 new method -->
+              <!-- <div class="row mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <h5>活動項目 <span class="required-mark">*</span></h5>
+                </div>
+              </div>
+              <div class="row mb-3 justify-content-center g-2">
+                <div class="col-md-4 justify-content-center">
+                  <div class="list-group" id="eventList">
+                    <label class="list-group-item list-group-item-action">
+                      <input type="radio" class="form-check-input me-2" value="Summer BBQ Party" name="activities"
+                        required>
+                      1. Summer BBQ Party
+                      <img src="images/BBQ.jpg" class="img-fluid rounded w-75" alt="BBQ image">
+                    </label>
+                    <label class="list-group-item list-group-item-action">
+                      <input type="radio" class="form-check-input me-2" value="Entrepreneur Lecture Series"
+                        name="activities" required>
+                      2. Entrepreneur Lecture Series
+                      <img src="images/Entrepreneur.jpg" class="img-fluid rounded w-75" alt="Entrepreneur image">
+                    </label>
+                    <label class="list-group-item list-group-item-action">
+                      <input type="radio" class="form-check-input me-2" value="Family Sports Day" name="activities"
+                        required>
+                      3. Family Sports Day
+                      <img src="images/Family_Sports.png" class="img-fluid rounded w-75" alt="Sports image">
+                    </label>
+                    <label class="list-group-item list-group-item-action">
+                      <input type="radio" class="form-check-input me-2" value="Charity Run" name="activities" required>
+                      4. Charity Run
+                      <img src="images/Charity-run.jpg" class="img-fluid rounded w-75" alt="Charity image">
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card  text-center d-none" id="eventDetails">
+                    <div class="card-body">
+                      <div id="event-1-all" class="event-details">
+                        <h5 class="card-title text-primary fst-italic"><strong>Event 1 - Summer BBQ Party</strong></h5>
+                        <ul class="list-unstyled">
+                          <li><strong>Date:</strong> July 15, 2023</li><br>
+                          <li><strong>Time:</strong> 4:00 PM to 8:00 PM</li><br>
+                          <li><strong>Location:</strong> BBQ area at ABC Park</li><br>
+                          <li><strong>Event Highlight:</strong> BBQ, picnic, outdoor games, music performances
+                          </li><br>
+                          <li><strong>Free:</strong> Free admission</li>
+                        </ul>
+                        <img src="images/BBQ.jpg" alt="BBQ image" class="card-img-bottom">
+                      </div>
+                      <div id="event-2-all" class="event-details">
+                        <h5 class="card-title text-primary fst-italic"><strong>Event 2 - Entrepreneur Lecture
+                            Series</strong></h5>
+                        <ul class="list-unstyled">
+                          <li><strong>Date:</strong> August 10, 2023</li><br>
+                          <li><strong>Time:</strong> 7:00 PM to 9:00 PM</li><br>
+                          <li><strong>Location:</strong> XYZ Conference Center</li><br>
+                          <li><strong>Event Highlight:</strong> Successful entrepreneurs sharing experiences, Q&A
+                            session, networking</li><br>
+                          <li><strong>Free:</strong> Company employees: $50/person, Companions: $100/person</li>
+                        </ul>
+                        <img src="images/Entrepreneur.jpg" alt="Entrepreneur image" class="card-img-bottom">
+                      </div>
+                      <div id="event-3-all" class="event-details">
+                        <h5 class="card-title text-primary fst-italic"><strong>Event 3 - Family Sports Day</strong></h5>
+                        <ul class="list-unstyled">
+                          <li><strong>Date:</strong> September 3, 2023</li><br>
+                          <li><strong>Time:</strong> 9:00 AM to 12:00 PM</li><br>
+                          <li><strong>Location:</strong> 123 Sports Field</li><br>
+                          <li><strong>Event Highlight:</strong> Parent-child sports competitions, health seminars,
+                            game booths, free health check-ups</li><br>
+                          <li><strong>Free:</strong> Free, Companions: $50/person</li>
+                        </ul>
+                        <img src="images/Family_Sports.png" alt="Sports image" class="card-img-bottom">
+                      </div>
+                      <div id="event-4-all" class="event-details">
+                        <h5 class="card-title text-primary fst-italic"><strong>Event 4 - Charity Run</strong></h5>
+                        <ul class="list-unstyled">
+                          <li><strong>Date:</strong> October 15, 2023</li><br>
+                          <li><strong>Time:</strong> 8:00 AM to 11:00 AM</li><br>
+                          <li><strong>Location:</strong> City Park</li><br>
+                          <li><strong>Event Highlight:</strong> 5K charity run, live music performances, food
+                            stalls, photo booth, lucky draw prizes</li><br>
+                          <li><strong>Free:</strong> Company employees: $100/person, Companions: $300/person</li>
+                        </ul>
+                        <img src="images/Charity-run.jpg" alt="Charity image" class="card-img-bottom">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
+              <!-- 期望參與活動 old method -->
+              <div class="row mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <h5>🌏活動項目 <span class="required-mark">*</span></h5>
+                </div>
+              </div>
+              <div class="row mb-3 justify-content-center g-2">
+                <div class="card col-md-3 col-sm-6 justify-content-center">
+                  <!-- <div class="form-check form-check-inline mt-2 ">
+                    <input type="radio" class="form-check-input" value="Summer BBQ Party" name="activities"
+                      id="activities_Radio1" required onclick="event1()">
+                    <label for="activities_Radio1" class="form-check-label">
+                      <img src="images/BBQ.jpg" class="img-fluid rounded event-hover" alt="BBQ image">
+                      <h6 class=" text-bottom">1. Summer BBQ Party</h6>
+                    </label>
+                  </div> -->
+
+                  <div class="card-body">
+                    <label for="activities_Radio1" class="form-check-label event-hover">
+                      <img src="images/BBQ.jpg" class="card-img-top" alt="BBQ image">
+                      <p class="card-text"><input type="radio" class="form-check-input me-1" value="Summer BBQ Party"
+                          name="activities" id="activities_Radio1" required onclick="event1()">1. Summer BBQ Party</p>
+                    </label>
+                  </div>
+
+                </div>
+                <div class="card col-md-3 col-sm-6 justify-content-center">
+                  <!-- <div class="form-check form-check-inline mt-2 ">
+                    <input type="radio" class="form-check-input" value="Entrepreneur Lecture Series" name="activities"
+                      id="activities_Radio2" required onclick="event2()">
+                    <label for="activities_Radio2" class="form-check-label">
+                      <img src="images/Entrepreneur.jpg" class="img-fluid rounded event-hover" alt="Entrepreneur image">
+                      <h6 class=" text-bottom">2. Entrepreneur Lecture Series</h6>
+                    </label>
+                  </div> -->
+                  <div class="card-body">
+                    <label for="activities_Radio2" class="form-check-label event-hover">
+                      <img src="images/Entrepreneur.jpg" class="card-img-top" alt="Entrepreneur image">
+                      <p class="card-text"><input type="radio" class="form-check-input me-1"
+                          value="Entrepreneur Lecture Series" name="activities" id="activities_Radio2" required
+                          onclick="event2()">2. Entrepreneur Lecture Series</p>
+                    </label>
+                  </div>
+                </div>
+                <div class="card col-md-3 col-sm-6 justify-content-center">
+                  <!-- <div class="form-check form-check-inline mt-2 ">
+                    <input type="radio" class="form-check-input" value="Family Sports Day" name="activities"
+                      id="activities_Radio3" required onclick="event3()">
+                    <label for="activities_Radio3" class="form-check-label">
+                      <img src="images/Family_Sports.png" class="img-fluid rounded event-hover" alt="Sports image">
+                      <h6 class=" text-bottom">3. Family Sports Day</h6>
+                    </label>
+                  </div> -->
+                  <div class="card-body">
+                    <label for="activities_Radio3" class="form-check-label event-hover">
+                      <img src="images/Family_Sports.png" class="card-img-top" alt="Sports image">
+                      <p class="card-text"><input type="radio" class="form-check-input me-1" value="Family Sports Day"
+                          name="activities" id="activities_Radio3" required onclick="event3()">3. Family Sports Day</p>
+                    </label>
+                  </div>
+                </div>
+                <div class="card col-md-3 col-sm-6 justify-content-center">
+                  <!-- <div class="form-check form-check-inline mt-2 ">
+                    <input type="radio" class="form-check-input" value="Charity run" name="activities"
+                      id="activities_Radio4" required onclick="event4()">
+                    <label for="activities_Radio4" class="form-check-label">
+                      <img src="images/Charity-run.jpg" class="img-fluid rounded event-hover" alt="Charity image">
+                      <h6 class=" text-bottom">4. Charity Run</h6>
+                    </label>
+                  </div> -->
+                  <div class="card-body">
+                    <label for="activities_Radio4" class="form-check-label event-hover">
+                      <img src="images/Charity-run.jpg" class="card-img-top " alt="Charity image">
+                      <p class="card-text"><input type="radio" class="form-check-input me-1" value="Charity run"
+                          name="activities" id="activities_Radio4" required onclick="event4()">4. Charity Run</p>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!-- 活動項目詳細介紹(選取活動後新增這個區塊): 可以用card -->
+              <!-- Event 1 -->
+              <div class="col-md-10 mb-2 mt-2" id="event-1-all" style="display: none; opacity: 1;"> <!-- 先隱藏 -->
+                <div class="card text-center">
+                  <div class="card-body shadow rounded pt-0 px-0"> <!-- 加陰影 -->
+                    <div class="event-1">
+                      <div class="row event-title1 m-0 rounded">
+                        <h5 class="card-title text-white fst-italic"> <strong>Event 1 - Summer BBQ Party🍢</strong>
+                        </h5>
+                      </div>
+
+                      <!-- 列表清單 -->
+                      <ul class="list-unstyled mt-1"> <!-- list-unstyled: 去除原本的黑點 -->
+                        <li><strong>Date <br> </strong>July 15, 2023</li><br>
+                        <li><strong>Time <br> </strong>4:00 PM to 8:00 PM</li><br>
+                        <li><strong>Location <br> </strong>BBQ area at ABC Park</li><br>
+                        <li><strong>Event Highlight <br> </strong>BBQ, picnic, outdoor games, music
+                          performances</li><br>
+                        <li><strong>Fee <br> </strong>Free admission</li>
+                      </ul>
+                      <!-- <img src="images/BBQ.jpg" alt="BBQ image" class="card-img-bottom p-3"> -->
+                      <div class="row justify-content-center">
+                        <div id="eventCarousel-1" class="col-9 carousel slide" data-bs-ride="carousel">
+                          <div class="carousel-inner">
+                            <div class="carousel-item active" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/BBQ.jpg" alt="BBQ image" class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/BBQ-2.jpeg" alt="BBQ image" class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/BBQ-3.jpg" alt="BBQ image" class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel-1"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel-1"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Event 2 -->
+              <div class="col-md-10 mb-2 mt-2" id="event-2-all" style="display: none;"> <!-- 先隱藏 -->
+                <div class="card text-center">
+                  <div class="card-body shadow rounded pt-0 px-0"> <!-- 加陰影 -->
+                    <div class="event-2">
+                      <div class="row event-title2 m-0 rounded">
+                        <h5 class="card-title text-white fst-italic"> <strong>Event 2 - Entrepreneur Lecture
+                            Series🧑🏻‍💼</strong></h5>
+                      </div>
+
+                      <ul class="list-unstyled mt-1"> <!-- 去除原本的黑點 -->
+                        <li><strong>Date <br> </strong>August 10, 2023</li> <br>
+                        <li><strong>Time <br> </strong>7:00 PM to 9:00 PM</li> <br>
+                        <li><strong>Location <br> </strong>XYZ Conference Center</li> <br>
+                        <li><strong>Event Highlight <br> </strong>Successful entrepreneurs sharing
+                          experiences, Q&A session, networking</li> <br>
+                        <li><strong>Fee <br> </strong>Company employees: $50/person, Companions:
+                          $100/person</li>
+                      </ul>
+                      <!-- <img src="images/Entrepreneur.jpg" alt="Entrepreneur image" class="card-img-bottom p-3"> -->
+                      <div class="row justify-content-center">
+                        <div id="eventCarousel-2" class="col-9 carousel slide" data-bs-ride="carousel">
+                          <div class="carousel-inner">
+                            <div class="carousel-item active" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Entrepreneur.jpg" alt="Entrepreneur image"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Entrepreneur-3.jpeg" alt="Entrepreneur image"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Entrepreneur-4.jpeg" alt="Entrepreneur image"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel-2"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel-2"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Event 3 -->
+              <div class="col-md-10 mb-2 mt-2" id="event-3-all" style="display: none;"> <!-- 先隱藏 -->
+                <div class="card text-center">
+                  <div class="card-body shadow rounded pt-0 px-0"> <!-- 加陰影 -->
+                    <div class="event-3">
+                      <div class="row event-title3 m-0 rounded">
+                        <h5 class="card-title text-white fst-italic"> <strong>Event 3 - Family Sports Day🏐</strong>
+                        </h5>
+                      </div>
+
+                      <ul class="list-unstyled mt-1"> <!-- 去除原本的黑點 -->
+                        <li><strong>Date <br> </strong>September 3, 2023</li> <br>
+                        <li><strong>Time <br> </strong>9:00 AM to 12:00 PM</li> <br>
+                        <li><strong>Location <br> </strong>123 Sports Field</li> <br>
+                        <li><strong>Event Highlight <br> </strong>Parent-child sports competitions,
+                          health seminars, game booths, free health check-ups</li> <br>
+                        <li><strong>Fee <br> </strong>Company employees: Free, Companions: $50/person</li>
+                      </ul>
+                      <!-- <img src="images/Family_Sports.jpg" alt="Sports image" class="card-img-bottom p-3"> -->
+                      <div class="row justify-content-center">
+                        <div id="eventCarousel-3" class="col-9 carousel slide" data-bs-ride="carousel">
+                          <div class="carousel-inner">
+                            <div class="carousel-item active" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Family_Sports.png" alt="Sports image"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Family_Sports_2.jpg" alt="Sports image"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Family_Sports_3.jpg" alt="Sports image"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel-3"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel-3"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Event 4 -->
+              <div class="col-md-10 mb-2 mt-2" id="event-4-all" style="display: none;"> <!-- 先隱藏 -->
+                <div class="card text-center">
+                  <div class="card-body shadow rounded pt-0 px-0"> <!-- 加陰影 -->
+                    <div class="event-4">
+                      <div class="row event-title4 m-0 rounded">
+                        <h5 class="card-title text-white fst-italic"> <strong>Event 4 - Charity Run🏃🏻</strong></h5>
+                      </div>
+                      <ul class="list-unstyled mt-1"> <!-- 去除原本的黑點 -->
+                        <li><strong>Date <br> </strong>October 15, 2023</li> <br>
+                        <li><strong>Time <br> </strong>8:00 AM to 11:00 AM</li> <br>
+                        <li><strong>Location <br> </strong>City Park</li> <br>
+                        <li><strong>Event Highlight <br> </strong>5K charity run, live music performances, food stalls,
+                          photo booth, lucky draw prizes</li> <br>
+                        <li><strong>Fee <br> </strong>Company employees: $100/person, Companions: $300/person</li>
+                      </ul>
+                      <!-- <img src="images/Family_Sports.png" alt="Sports image" class="card-img-bottom p-3"> -->
+                      <div class="row justify-content-center">
+                        <div id="eventCarousel-4" class="col-9 carousel slide" data-bs-ride="carousel">
+                          <div class="carousel-inner">
+                            <div class="carousel-item active" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Charity-run.jpg" alt="Charity Run"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Charity-run-2.jpeg" alt="Charity Run"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                              <!-- <img src="..." class="d-block w-100" alt="..."> -->
+                              <img src="images/Charity-run-3.jpg" alt="Charity Run"
+                                class="card-img-bottom p-3 d-block w-100">
+                            </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel-4"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel-4"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 參加總人數: 隨著人數增加，動態增加輸入的資料內容 -->
+              <div class="row mb-2 mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <label for="totalParticipants">
+                    <h5>👨🏻‍👩🏻‍👧🏻‍👦🏻陪同者總數 (1~10/人) <span class="required-mark me-2">* </span></h5>
+                  </label>
+                  <!-- type="number"包含幾個特定字元，因此要加入 onkeydown 的條件：只能輸入數字，e, -, ., + 都不能輸入 -->
+                  <input type="number"
+                    onkeydown="javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"
+                    class="form-control border-0 border-bottom" id="totalParticipants"
+                    oninput="if( value < 0) value = 1;if( value > 10) value = 10" required>
+                  <!-- 如果輸入值小於1，自動轉成 1；如果輸入值大於10，自動轉成10。 原本寫法：min="1" max="10"-->
+                </div>
+                <!-- 參加者的詳細資訊 -->
+                <div id="participantFields" class="row mb-2 mt-3 justify-content-center g-2"></div>
+              </div>
+
+
+              <!-- 開放式問題 -->
+              <div class="row mb-2 mt-3 justify-content-center g-2">
+                <div class="col-md-10">
+                  <label for="quest" class="form-label">
+                    <h5>❓其他問題</h5>
+                  </label>
+                  <textarea class="form-control" id="quest" rows="3"></textarea>
+                </div>
+              </div>
+
+              <!-- 送出: 送出後要跳出 popup window(Modal) 顯示使用者輸入的資料並計算總數，
+                    按確認後跳出，按返回則保留使用者輸入的資料-->
+              <div class="row mb-3 mt-4 justify-content-center g-2">
+                <div class="col-md-2"> <!-- col-md-10 -->
+                  <button id="subBtn" type="submit" class="btn btn-success" name="u_login">提交表單</button> <!-- data-bs-toggle=" modal"
+                                data-bs-target="#staticBackdrop" -->
+                </div>
+
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+
+        <div id="successMessage" class="alert alert-success d-none"></div>
+        <div id="quoteMessage"></div>
+
+      </div>
+
+      <!-- Modal: 按下提交後，彈出資料確認的視窗 -->
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">報名表資訊確認</h5>
+              <button type="button" class="btn-close d-none" data-bs-dismiss="modal" aria-label="Close"
+                id="btnClose"></button>
+            </div>
+            <div class="modal-body">
+              <!-- 資料確認 -->
+              <div id="popup" class="popup-container d-none"> <!-- d-none: 先隱藏 -->
+                <h3>主參加者</h3>
+                <div id="popup-content"></div>
+                <!-- <p id="totalAmount"></p> -->
+                <h4 class="mt-3">陪同者資料</h4>
+                <div id="popup-participants" class="mt-2">
+
+                  <table class="table table-bordered" id="table-part">
+                    <!-- <tr>
+                      <th>姓名</th>
+                      <th>性別</th>
+                      <th>電話</th>
+                      <th>信箱</th>
+                    </tr> -->
+                  </table>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="returnBtn" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+              <!-- data-bs-dismiss="modal"：點擊按鈕後會關閉modal -->
+              <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal"
+                onclick="getres()">確認</button><!-- onclick="getres()" -->
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+    </section> <!-- Main form -->
+
+  </div>
+
+  <!-- Footer -->
+  <footer id="mainFooter" class="main-footer text-bg-dark p-3 text-center d-none">
+    <p class="m-0"><small>Copyright &copy; 2023. All Rights Reserved</small></p>
+  </footer>
+  <!-- Footer -->
+
+
+
+  <!-- importing bootstrap.js and supporting js libraries -->
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script> -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+    crossorigin="anonymous"></script>
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- importing app scripts (load order is important) -->
+  <script type="text/javascript" src="js/authConfig.js"></script>
+  <script type="text/javascript" src="js/ui.js"></script>
+
+  <!-- <script type="text/javascript" src="js/authRedirect.js"></script> -->
+  <!-- uncomment the above line and comment the line below if you would like to use the redirect flow -->
+  <script type="text/javascript" src="js/authPopup.js"></script>
+
+  <script src="js/main_new.js"></script>
+  <!-- <script nomodule src="js/main.js"></script>
+  <script type="module" src="js/api.js"></script> -->
+</body>
+
+</html>

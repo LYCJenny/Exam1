@@ -1,0 +1,80 @@
+/* 必填符號 */
+.required-mark {
+    color: red;
+    font-weight: bold;
+}
+
+/* banner背景圖片 */
+.banner-holder {
+    background-image: url("../images/banner.jpg");
+    /*mages/sunset.png*/
+    background-size: cover;
+    background-position: center;
+}
+
+.event-details {
+    display: none;
+}
+
+.event-title1 {
+    /* background-color: rgb(249, 195, 203);   */
+    background-color: rgb(62, 56, 78);
+    padding: 0.5rem;
+}
+
+.event-title2 {
+    background-color: rgb(90, 77, 92);
+    padding: 0.5rem;
+}
+
+.event-title3 {
+    /* background-color: rgb(249, 211, 195); */
+    background-color: rgb(154, 84, 108);
+    padding: 0.5rem;
+}
+
+.event-title4 {
+    /* background-color: rgb(225, 249, 195); */
+    background-color: rgb(84, 106, 56);
+    padding: 0.5rem;
+}
+
+.event-hover {
+    opacity: 0.8;
+}
+
+.event-hover:hover,
+.event-hover:checked {
+    opacity: 1;
+    /* 滑鼠移到上面或被點選時，opacity 為 1 */
+}
+
+body {
+    font-family: DFKai-SB;
+}
+
+body span {
+    font-family: Microsoft JhengHei;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    /*使物件依序排列*/
+    flex-direction: column;
+    /*使物件垂直排列*/
+}
+
+.wrapper {
+    flex-grow: 1;
+    /*可佔滿垂直剩餘的空間*/
+}
+
+.footer {
+    background-color: gray;
+}
