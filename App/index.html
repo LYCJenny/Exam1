@@ -30,6 +30,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+  <!-- reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -741,6 +743,9 @@
 
             </div>
             <div class="modal-footer">
+              <div class="g-recaptcha" data-sitekey="6LcFSDcnAAAAAGxNXAZ7qdW4r4VCIabi57UGTn7i" data-theme="light"
+                data-size="normal" data-callback="verify" data-expired-callback="expired" data-error-callback="error">
+              </div>
               <button type="button" id="returnBtn" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
               <!-- data-bs-dismiss="modal"：點擊按鈕後會關閉modal -->
               <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal"
