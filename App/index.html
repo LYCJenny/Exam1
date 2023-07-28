@@ -58,15 +58,30 @@
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="banner-content text-center my-5 py-5">
-              <h4 id="title-div" class="card-header text-center mt-3 text-white fst-italic fw-bold"> Welcome to the
+              <h4 id="title-div" class="card-header text-center mt-3 text-white fst-italic fw-bold txt1"> Welcome to the
                 Event
                 Registration Form,
                 please press
                 "Sign-in" button to access the main form.
               </h4>
-              <h3 id="welcome-div" class="card-header text-center d-none text-white fst-italic fw-bold"></h3>
+              <h3 id="welcome-div" class="card-header text-center d-none text-white fst-italic fw-bold txt1"></h3>
               <!-- 登入後 歡迎XXX -->
-              <p> </p>
+
+              <div id="organizer" class="row justify-content-center mt-4 d-none">
+                <div class="bg-light col-6 rounded p-0" style="--bs-bg-opacity: .75;">
+                  <div class="mt-3">主辦單位：Moxa IT </div>
+                  <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '&rang;';">
+                    <ol class="breadcrumb px-4 justify-content-center ">
+                      <li class="breadcrumb-item"><a href="https://www.moxa.com/tw" target="_blank">Website</a></li>
+                      <li class="breadcrumb-item"><a href="https://tw.linkedin.com/company/moxa"
+                          target="_blank">LinkedIn</a></li>
+                      <li class="breadcrumb-item"><a href="https://www.facebook.com/Moxa.TW/?locale=zh_TW"
+                          target="_blank">Facebook</a>
+                      </li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
             </div>
           </div>
           <!-- <img src="images/banner.jpg" alt="banner img"> -->
@@ -715,9 +730,9 @@
 
         <div id="successMessage" class="alert alert-success d-none"></div>
         <div id="quoteMessage"></div>
-        <!--  <div id="quoteImg" class="position-absolute end-0"> class=" d-none" 
-          <img src="images/quote.jpeg" alt="quote image">
-        </div>-->
+        <div id="quoteImg" class=" d-none"> <!--class=" d-none"-->
+          <img src="images/quote3.png" alt="quote image">
+        </div>
       </div>
 
       <!-- Modal: 按下提交後，彈出資料確認的視窗 -->
@@ -740,12 +755,7 @@
                 <div id="popup-participants" class="mt-2">
 
                   <table class="table table-bordered" id="table-part">
-                    <!-- <tr>
-                      <th>姓名</th>
-                      <th>性別</th>
-                      <th>電話</th>
-                      <th>信箱</th>
-                    </tr> -->
+
                   </table>
                 </div>
               </div>
@@ -754,6 +764,7 @@
             <div class="modal-footer">
               <div id="recaptcha1">
               </div>
+              <button type="button" id="saveBtn" class="btn btn-secondary">存成Excel檔</button>
               <button type="button" id="returnBtn" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
               <!-- data-bs-dismiss="modal"：點擊按鈕後會關閉modal -->
               <button type="button" id="confirmBtn" class="btn btn-primary"

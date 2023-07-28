@@ -6,11 +6,33 @@
 
 /* banner背景圖片 */
 .banner-holder {
+    background-image: url("../images/sunrise.jpg");
+    /*sunset.png*/
+    /*images/banner1.jpg*/
+    background-size: cover;
+    background-position: right;
+}
+
+/* banner背景圖片 */
+.banner-signout {
     background-image: url("../images/sunset.png");
     /*images/banner1.jpg*/
     background-size: cover;
     background-position: right;
 }
+
+.txt1 {
+    font-family: 'Droid Serif';
+    font-weight: 700;
+    font-size: 35px;
+    line-height: 35px;
+    color: #fff;
+    margin-bottom: 5px;
+    background: url(../images/px0.png);
+    display: inline-block;
+    padding: 0 20px;
+}
+
 
 .event-details {
     display: none;

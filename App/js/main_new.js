@@ -348,7 +348,7 @@ document.getElementById("participantForm").addEventListener("submit", function (
     //     allPhoneNum = areaCode.value + phoneNum.value; // 區域號碼(regionNum)+電話號碼
     // }
 
-    let allPhoneNum = phoneNum.value === "" ? "" : areaCode.value + phoneNum.value;
+    let allPhoneNum = phoneNum.value === "" ? "" : areaCode.value + "-" + phoneNum.value;
 
 
     /** 手機號碼檢查: 第一個數字有輸入0的話要自動刪除 */
@@ -599,6 +599,7 @@ document.getElementById("participantForm").addEventListener("submit", function (
             document.getElementById("recaptcha1").classList.remove("d-none");
             document.getElementById("successMessage").textContent = `您已成功報名 ${activities} 活動`;
             document.getElementById("successMessage").classList.remove("d-none");
+            document.getElementById("quoteImg").classList.remove("d-none");
             //直接清除所有頁面，用 "" 取代
             document.getElementById("participantForm").innerHTML = "";
             getres();
@@ -622,7 +623,7 @@ document.getElementById("participantForm").addEventListener("submit", function (
                 <table class="table table-striped">
                     <tr><td>姓名:</td><td>${userData[0]} ${userData[1]}</td></tr>
                     <tr><td>電話:</td><td>${allPhoneNum}</td></tr>
-                    <tr><td>手機:</td><td>${mobileNew}</td></tr>
+                    <tr><td>手機:</td><td>+886${mobileNew}</td></tr>
                     <tr><td>信箱:</td><td>${emailValue}</td></tr>
                     <tr><td>性別:</td><td>${gender}</td></tr>
                     <tr><td>生日:</td><td>${birthdate}</td></tr>
@@ -638,7 +639,8 @@ document.getElementById("participantForm").addEventListener("submit", function (
                 <h3>陪同者資訊</h3>
                 <table class="table table-striped">
                     <tr>
-                        <th>陪同者姓名</th>
+                        <th>陪同者</th>
+                        <th>姓名</th>
                         <th>性別</th>
                         <th>手機</th>
                         <th>信箱</th>
@@ -657,6 +659,7 @@ document.getElementById("participantForm").addEventListener("submit", function (
 
                 userDataPDF += `
                     <tr>
+                        <td>${i + 1}</td>
                         <td>${partAllData[0] + partAllData[1]}</td>
                         <td>${partAllData[2]}</td>
                         <td>${partmobileNew}</td>
@@ -674,6 +677,59 @@ document.getElementById("participantForm").addEventListener("submit", function (
             printWindow.document.close();
             printWindow.print();
 
+        });
+
+        document.getElementById("saveBtn").addEventListener("click", function () {
+            /** excel 檔  */
+            //Create a new workbook
+            const workbook = XLSX.utils.book_new();
+
+            // Create a new worksheet
+            const worksheet = XLSX.utils.json_to_sheet([{
+                "主報名者姓名": userData[0] + userData[1],
+                "電話": allPhoneNum,
+                "手機": mobileNew,
+                "信箱": emailValue,
+                "性別": gender,
+                "生日": birthdate,
+                "活動項目": activities,
+                "總參與人數": Number(totalparticipants) + 1,
+                "總金額": totalAmount,
+                "其他問題": otherQuest
+            }]);
+
+            // Add participant information to the same worksheet
+            for (let i = 0; i < participantsInfo.length; i++) {
+
+                const partData = Object.values(participantsInfo[i]);
+                let partmobileOld = partData[3];
+                let partmobileNew;
+                if (partmobileOld.charAt(0) === "0") {
+                    partmobileNew = "+886" + partmobileOld.substr(1);
+                } else {
+                    partmobileNew = partmobileOld;
+                }
+
+                const row = {
+                    ["陪同者" + (i + 1) + "姓名"]: partData[0] + partData[1],
+                    "性別": partData[2],
+                    "手機": partmobileNew,
+                    "信箱": partData[4]
+                };
+                XLSX.utils.sheet_add_json(worksheet, [row], { origin: -1 });
+            }
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, "報名資料");
+
+            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+
+            const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+            // Generate a download link and trigger the download
+            const downloadLink = document.createElement("a");
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = "報名資料.xlsx";
+            downloadLink.click();
         });
 
         //點選"取消"按鈕，回到表單
