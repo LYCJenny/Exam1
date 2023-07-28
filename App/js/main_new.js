@@ -350,7 +350,6 @@ document.getElementById("participantForm").addEventListener("submit", function (
 
     let allPhoneNum = phoneNum.value === "" ? "" : areaCode.value + "-" + phoneNum.value;
 
-
     /** 手機號碼檢查: 第一個數字有輸入0的話要自動刪除 */
     let mobileOld = document.getElementById('mobile0').value; //使用 let 設定變數是因為 mobile
     let mobileNew;
